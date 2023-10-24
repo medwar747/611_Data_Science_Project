@@ -6,7 +6,7 @@ clean:
 	mkdir -p derived_data
 	mkdir -p figures
 	
-derived_data/chronic1_cleaned.csv: clean_data.R source_data/export.csv
+derived_data/chronic1_cleaned.csv: clean_data.R source_data/chronic0_source.csv
 	Rscript clean_data.R
 	
 derived_data/chronic2_sample.csv: subset.R derived_data/chronic1_cleaned.csv
