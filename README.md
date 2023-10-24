@@ -2,11 +2,11 @@
 
 This repository houses an analysis of symptoms from participants with various chronic conditions, as recorded via the Flaredown app. [Click here](https://www.kaggle.com/datasets/flaredown/flaredown-autoimmune-symptom-tracker) to view a summary in Kaggle.
 
-This dataset is too large for GitHub, so downloading it and adding the csv file to /source_data will be necessary.
-
 ## Setting up the Environment
 
 The included Dockerfile is essential to building a neat and reproducible experience for the user, where needed preliminaries like library installations are executed.
+
+Before invoking Docker, always make sure that the working directory is set to the path at which the project resides.
 
 Repository users will need to be familiar with three steps in order to use this repository:
 
@@ -22,7 +22,7 @@ docker build . -t medwar
 
 After the container has been built (any time in the past), it can be run with:
 
-```         
+```  
 docker run --rm -e PASSWORD=rstudio -v "$(pwd):/home/rstudio/work" -p 8789:8787 -it medwar
 ```
 
