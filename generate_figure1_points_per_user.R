@@ -11,7 +11,7 @@ unique_subjects <- chronic %>%
 unique_subjects <- unique_subjects %>% filter(!is.na(sex));
 
 # Examine the relationship between sex and data points contributed per user
-png("figures/figure1.png");
+png("figures/figure1_points_per_user.png");
 ggplot(unique_subjects, aes(x = n, fill = sex)) +
   geom_histogram(binwidth = .5, position = "identity", alpha = 0.5, color = "black") +
   scale_x_log10(labels = scales::number_format(accuracy = 1), breaks = 10^seq(0, 4, by = 1)) +

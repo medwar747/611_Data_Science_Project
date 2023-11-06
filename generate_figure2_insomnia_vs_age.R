@@ -39,7 +39,7 @@ plot_data <- user_day_record_count %>%
   inner_join(user_age, by="user_id") %>%
   mutate(prop=numerator/denominator);
 
-png("figures/figure2.png");
+png("figures/figure2_insomnia_vs_age.png");
 ggplot(plot_data, aes(x = age, y = prop)) +
   geom_point() +
   labs(title = "Does Insomnia Occurrence Change with Age?",
