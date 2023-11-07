@@ -6,7 +6,7 @@ This repository houses an analysis of symptoms from participants with various ch
 
 Be sure to have Git, Docker (Desktop), and RStudio installed before attempting to interact with this project.\
 Note: the following instructions are designed for Windows users.\
-Note: steps 1-2a need only be executed when interacting with the project for the first time.
+Note: step 1 need only be executed when interacting with the project for the first time.
 
 #### 1. Cloning the Repository
 
@@ -21,28 +21,21 @@ git clone https://github.com/medwar747/611_Data_Science_Project.git
 Open the project and note the Dockerfile. The Dockerfile is essential to building a neat and reproducible experience for the user, where needed preliminaries like library installations are executed.
 
 Before invoking Docker, always make sure that:\
-- the working directory is set to the directory in which the Dockerfile resides. If you just completed the step 1, you will need to execute `cd 611_Data_Science_Project`.\
+- the working directory is set to the directory in which the Dockerfile resides. If you just completed the step 1, you will need to execute `cd 611_Data_Science_Project`. 
 - Docker Desktop is running in the background.
 
-##### a. Building the Docker Container.
+##### Building and Running the Docker Container.
 
-First-time users can build the repository container with Unix/PowerShell:
-
-```         
-docker build . -t medwar
-```
-
-##### b. Running the Docker Container.
-
-After the container has been built (any time in the past), it can be run after invoking `bash` with Unix/PowerShell:
+Users can build and run the repository container with the script `start-env.sh`. 
+With Unix/PowerShell this looks like:
 
 ```         
-docker run --rm -e PASSWORD=rstudio -v "$(pwd):/home/rstudio/work" -p 8789:8787 -it medwar
+bash start-env.sh
 ```
 
 #### 3. Accessing the Environment.
 
-Visit <http://localhost:8789> to access and interact with the repository environment in RStudio. Both the username and password are "rstudio".
+Visit <http://localhost:8789> to access the repository environment in RStudio. Both the username and password are "rstudio".
 
 ## Project Structure and Flow
 
