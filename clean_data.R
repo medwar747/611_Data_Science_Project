@@ -5,7 +5,7 @@ chronic <- read_csv("source_data/chronic0_source.csv",show_col_types = FALSE);
 # user_id
 
 # age
-chronic <- chronic %>% mutate(age = ifelse(!(0<=age & age<=150), NA, age));
+chronic <- chronic %>% mutate(age = ifelse(!(0<=age & age<=95), NA, age));
 
 # sex
 chronic <- chronic %>% mutate(sex = ifelse(sex=="doesnt_say", NA, sex));
