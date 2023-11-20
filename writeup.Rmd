@@ -1,0 +1,106 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# Insomnia: Indicators and Associations in Self-reported Data
+
+## Introduction
+
+One of the most common conditions that affects sleep is characterized by
+its untimely absence. Insomnia affects anywhere from 6-30% of
+individuals worldwide, depending on varying criteria for frequency,
+intensity, and duration of sleeplessness [1]. There are also many
+explanations for insomnia, ranging from lifestyle and stress to genetics
+and developmental experiences [2,3]. One aspect of insomnia that is
+ubiquitous, however, is its association with anxiety and depression [2].
+
+Individuals interested in challenging insomnia and other chronic
+conditions can download the Flaredown app and record a variety of
+"trackables"--diagnoses, symptoms, behaviors, even the weather--on their
+way to "decoding" their diseases [4]. To help with this endeavor, we can
+use the entirety of user data generated over seven years and begin
+hypothesis generation.
+
+## Data and Direction
+
+Despite Flaredown not being designed specifically for insomnia or sleep
+study, the presence of insomnia-tagged data is quite common in this
+dataset. The accuracy of such diagnoses cannot be so easily verified,
+given that these data are self-reported. There is nevertheless much to
+explore.
+
+Lets start by determining the most common tags reported on the days
+users reported insomnia:
+
+![The effect of demographic cluster on the effectiveness of PRT and
+Saline on cLBP.](./figures/figure_pca.png){#fig:org3b2c225
+width=".9\\linewidth"}
+
+Now, these also look like they would be the most common tags in
+general... but that's okay.
+
+## Insomnia Exploration {#sec:org6be84ae}
+
+There are common associations between insomnia and conditions, symptoms,
+and treatments, but let's explore the remaining tags. Looks like we have
+a lot of data on weather! Let's explore that further.
+
+## Dimensionality Reduction of Demographic Data {#sec:org9bbfddb}
+
+Welp. Weather has NOTHING to do with Insomnia
+
+## Automatic Cluster Meaning Identification {#sec:org46fc6a8}
+
+A challenge associated with non-linear dimensionality reduction combined
+with cluster analysis is the difficulty of associating meaning with each
+cluster since the transformation to the lower dimensional space is not
+easily interpreted.
+
+There are several possible solutions to this problem, but here we
+employed an unsupervised method: for each cluster, we trained a tree
+based model (AdaBoost (Freund and Schapire, 1997)) to predict whether a
+point would be classified into that cluster. From such a model we can
+extract the variables which are most important for the classification
+and then calculate summary statistics for each cluster. Using this
+method we identified the four distinct clusters as:
+
+-   Younger, Male, Unmarried, White
+
+-   Older, Male, Married, White
+
+-   Lower Weight, Female, Unmarried, White
+
+-   Median Weight, Female, Married, White
+
+A pat characterization of the diffuse outlier cloud is not furnished so
+easily, but most of these data points are characterized by being
+non-white participants.
+
+## Effect of Cluster Membership on Treatment {#sec:orge4ab3d8}
+
+Now that we have a plausible clustering of the subjects by demographic
+character, it is natural to ask whether these demographic identities
+correspond to treatment effect differences. This is show in Figure
+[3](#fig:org3b2c225){reference-type="ref" reference="fig:org3b2c225"}.
+
+![The effect of demographic cluster on the effectiveness of PRT and
+Saline on
+cLBP.](./figures/outcomes_by_demographic_clustering.png){width=".9\\linewidth"}
+
+The picture makes the case that there are strong effects of demographic
+group on treatment effect. In particular, older, unmarried men (who are
+white, like most participants) and younger, unmarried women (also white)
+benefit the most from the treatment. Other demographic groups benefit
+less from the intervention.
+
+# References
+
+1.  <https://jcsm.aasm.org/doi/10.5664/jcsm.26929>
+
+2.  <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8506741/pdf/atm-09-18-1426.pdf>
+
+3.  <https://journals.physiology.org/doi/full/10.1152/physrev.00046.2019>
+
+4.  <https://flaredown.com/>
