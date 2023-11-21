@@ -40,7 +40,7 @@ plot_data <- full_join(user_insomnia_count,days_per_user,by=c("user_id")) %>%
   filter(n>=10);
 
 # Display
-png("figures/figure2_insomnia_vs_age.png");
+png("figures/figure_insomnia_vs_age.png");
 ggplot(plot_data, aes(x = age, y = prop)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +

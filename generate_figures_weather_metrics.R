@@ -132,6 +132,7 @@ nmi_results2 <- NMI(left_slice$insomnia_indicator,left_slice$cluster);
 png("figures/figure_insomnia_cluster_subset.png");
 plot1 <- ggplot(left_slice, aes(x=PC1, y=PC2, color=as.factor(cluster))) +
   geom_point() +
+  scale_color_manual(values=c("#00bfc4","#f8766d")) +
   xlab("PC1") +
   ylab("PC2") + 
   labs(color = "Cluster") +

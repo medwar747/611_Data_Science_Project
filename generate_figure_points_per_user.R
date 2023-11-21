@@ -12,7 +12,7 @@ days_per_user <- chronic %>%
   tally() %>%
   arrange(desc(n));
 
-png("figures/figure1_days_per_user.png");
+png("figures/figure_days_per_user.png");
 ggplot(days_per_user, aes(x = n)) +
   geom_histogram(binwidth = 0.25, color = "black", fill="white") +
   scale_x_log10(labels = scales::number_format(accuracy = 1), breaks = 10^seq(0, 4, by = 0.25)) +

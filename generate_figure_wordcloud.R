@@ -2,11 +2,9 @@ library(tidyverse);
 library(data.table);
 library(tidytext);
 library(textmineR);
-library(wordcloud);
 library(hunspell);
-library(devtools);
-library(wordcloud2);
-library(htmlwidgets);
+library(wordcloud);
+library(RColorBrewer);
 
 chronic <- read_csv("derived_data/chronic1_cleaned.csv",show_col_types = FALSE);
 
@@ -33,7 +31,7 @@ pre_data <- mutate(of_interest,trackable_name=tolower(trackable_name));
 data <- filter(pre_data,!(is.na(trackable_name)));
 
 # Remove Tokens
-noise <- tibble(word=c("insomnia"));
+noise <- tibble(trackable_name=c("insomnia"));
 data <- data %>% anti_join(noise);
 
 # Count
@@ -45,6 +43,12 @@ name_freq <- data %>%
 #############################################################################################
 #                                 Generate Word Cloud
 #############################################################################################
-wc <-wordcloud2(name_freq,size=1,gridSize=10);
-wc;
-saveWidget(wc,"wc.html", selfcontained = F);
+# acorn <- floor(10000*runif(1));
+set.seed(1076);
+png("figures/figure_wordcloud.png",width=10,height=10,units="in",res=1200);
+wordcloud(words=name_freq$trackable_name, freq=name_freq$n, min.freq=3, max.word=75, colors=c("#1D91C0","#238443","#6A51A3","#EF6548","#A63603","#41AB5D","#00441B","#08306B"), scale=c(5,1.5));
+dev.off();
+
+
+
+
