@@ -4,6 +4,7 @@ clean:
 	rm -rf derived_data
 	rm -rf figures
 	rm -rf .created-dirs
+	rm -f writeup.html
 	
 .created-dirs:
 	mkdir -p derived_data
@@ -23,7 +24,7 @@ figures/figure_days_per_user.png: generate_figure_days_per_user.R derived_data/c
 figures/figure_insomnia_vs_age.png: generate_figure_insomnia_vs_age.R derived_data/chronic1_cleaned.csv
 	Rscript generate_figure_insomnia_vs_age.R
 	
-figures/figure_wordcloud.html: generate_figure_wordcloud.R derived_data/chronic1_cleaned.csv
+figures/figure_wordcloud.png: generate_figure_wordcloud.R derived_data/chronic1_cleaned.csv
 	Rscript generate_figure_wordcloud.R
 	
 figures/figure_pca.png: generate_figures_weather_metrics.R derived_data/chronic1_cleaned.csv
@@ -34,3 +35,6 @@ figures/figure_insomnia_cluster.png: generate_figures_weather_metrics.R derived_
 	
 figures/figure_insomnia_cluster_subset.png: generate_figures_weather_metrics.R derived_data/chronic1_cleaned.csv
 	Rscript generate_figures_weather_metrics.R
+	
+writeup.html: generate_writeup.R writeup.Rmd figures/figure_insomnia_cluster_subset.png figures/figure_insomnia_cluster.png figures/figure_insomnia_vs_age.png figures/figure_pca.png figures/figure_wordcloud.png
+	Rscript generate_writeup.R
