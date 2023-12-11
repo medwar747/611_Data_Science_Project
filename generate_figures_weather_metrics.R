@@ -2,6 +2,7 @@ library(tidyverse);
 library(aricode);
 library(gridExtra);
 library(grid);
+library(scatterplot3d);
 
 ################################################################################
 # Table of Contents
@@ -9,6 +10,7 @@ library(grid);
 # 1: Principal Component Analysis
 # 2: Comparison of Clusters: K-Means vs Actual
 # 3: [Subset] Comparison of Clusters: K-Means vs Actual
+# 4: Logistic Regression
 ################################################################################
 
 chronic <- read_csv("derived_data/chronic1_cleaned.csv",show_col_types = FALSE);
@@ -57,20 +59,20 @@ first_two_components <- pca_results$x %>%
   mutate(index=1:dim(pca_results$x)[1]);
 
 # Visualize
-plot1 <- ggplot(, aes(1:n_components, pca_variance)) +
+plot1A <- ggplot(, aes(1:n_components, pca_variance)) +
   geom_point() +
   geom_line() +
   xlab("Number of Components") +
   ylab("Proportion of Variance Explained by Each Principal Component") + 
   ggtitle("How Many Components Really Contribute?");
-plot2 <- ggplot(first_two_components, aes(x=PC1, y=PC2)) +
+plot1B <- ggplot(first_two_components, aes(x=PC1, y=PC2)) +
   geom_point() +
   xlab("PC1") +
   ylab("PC2") + 
   ggtitle("First Two Principal Components");
 ggsave(
   "figures/figure_pca.png",
-  grid.arrange(plot1, plot2, ncol=2, top=textGrob("Principal Component Analysis of Five Weather Metrics", gp=gpar(fontsize=20,font=2))),
+  grid.arrange(plot1A, plot1B, ncol=2, top=textGrob("Principal Component Analysis of Five Weather Metrics", gp=gpar(fontsize=20,font=2))),
   width = 12,
   height = 6,
   dpi = 300);
@@ -93,13 +95,13 @@ first_two_components$insomnia_indicator <- detached_indicator$insomnia_indicator
 nmi_results <- NMI(chronic4$insomnia_indicator,first_two_components$cluster);
 
 # Visualize
-plot1 <- ggplot(first_two_components, aes(x=PC1, y=PC2, color=as.factor(cluster))) +
+plot2A <- ggplot(first_two_components, aes(x=PC1, y=PC2, color=as.factor(cluster))) +
   geom_point() +
   xlab("PC1") +
   ylab("PC2") + 
   labs(color = "Cluster") +
   ggtitle("K-means on PC1:PC5");
-plot2 <- ggplot(first_two_components, aes(x=PC1, y=PC2, color=as.factor(insomnia_indicator))) +
+plot2B <- ggplot(first_two_components, aes(x=PC1, y=PC2, color=as.factor(insomnia_indicator))) +
   geom_point() +
   xlab("PC1") +
   ylab("PC2") + 
@@ -107,9 +109,9 @@ plot2 <- ggplot(first_two_components, aes(x=PC1, y=PC2, color=as.factor(insomnia
   ggtitle("True Identifiers");
 ggsave(
   "figures/figure_insomnia_cluster.png",
-  grid.arrange(plot1, plot2, ncol=2, top=textGrob("Can We Identify Structure within the First Two Principal Components of Five Weather Metrics?",gp=gpar(fontsize=20,font=2)), bottom=paste("Normalized Mutual Information (NMI):", as.character(nmi_results))),
+  grid.arrange(plot2A, plot2B, ncol=2, top=textGrob("Can We Identify Structure within the First Two Principal Components of Five Weather Metrics?",gp=gpar(fontsize=20,font=2)), bottom=paste("Normalized Mutual Information (NMI):", as.character(nmi_results))),
   width = 16,
-  height = 6,
+  height = 7,
   dpi = 300);
 
 ###############
@@ -129,23 +131,71 @@ left_slice$cluster <- kmeans_results2$cluster;
 nmi_results2 <- NMI(left_slice$insomnia_indicator,left_slice$cluster);
 
 # Visualize
-png("figures/figure_insomnia_cluster_subset.png");
-plot1 <- ggplot(left_slice, aes(x=PC1, y=PC2, color=as.factor(cluster))) +
+plot3A <- ggplot(left_slice, aes(x=PC1, y=PC2, color=as.factor(cluster))) +
   geom_point() +
   scale_color_manual(values=c("#00bfc4","#f8766d")) +
   xlab("PC1") +
   ylab("PC2") + 
   labs(color = "Cluster") +
-  ggtitle("True Identifiers");
-plot2 <- ggplot(left_slice, aes(x=PC1, y=PC2, color=as.factor(insomnia_indicator))) +
+  ggtitle("K-means on PC1(< -50) and PC2(complete)");
+plot3B <- ggplot(left_slice, aes(x=PC1, y=PC2, color=as.factor(insomnia_indicator))) +
   geom_point() +
   xlab("PC1") +
   ylab("PC2") + 
   labs(color = "Insomnia Indicator") +
-  ggtitle("K-means on PC1(< -50) and PC2(complete)");
+  ggtitle("True Identifiers");
 ggsave(
   "figures/figure_insomnia_cluster_subset.png",
-  grid.arrange(plot1, plot2, ncol=2, top=textGrob("Can We Identify Structure within (a Subset of) the First Two Principal Components?",gp=gpar(fontsize=20,font=2)), bottom=paste("Normalized Mutual Information (NMI):", as.character(nmi_results2))),
+  grid.arrange(plot3A, plot3B, ncol=2, top=textGrob("Can We Identify Structure within (a Subset of) the First Two Principal Components?",gp=gpar(fontsize=20,font=2)), bottom=paste("Normalized Mutual Information (NMI):", as.character(nmi_results2))),
   width = 12,
   height = 6,
   dpi = 300);
+
+###############
+# 4: Logistic Regression
+###############
+
+model <- glm(insomnia_indicator~PC1+PC2, data=first_two_components, family=binomial);
+model_table <- summary(model)$coefficients;
+if (model_table[2,4] < 0.0001) {
+  p1 <- "<0.0001";
+} else {
+  p1 <- as.character(round(model_table[2,4],3));
+}
+if (model_table[3,4] < 0.0001) {
+  p2 <- "<0.0001";
+} else {
+  p2 <- as.character(round(model_table[3,4],3));
+}
+
+predicted_data <- tibble(predictions=predict(model, select(first_two_components,c(PC1,PC2)), type="response"));
+
+# Verify by Hand
+# predicted_data2 <- mutate(first_two_components, insomnia_measure=(exp(-2.1329278+0.0030721*PC1+0.0008527*PC2))/(1+exp(-2.1329278+0.0030721*PC1+0.0008527*PC2)));
+
+pre_plot4_data_a <- rename(select(first_two_components,c(PC1,PC2,insomnia_indicator)),insomnia_measure=insomnia_indicator);
+pre_plot4_data_b <- tibble(PC1=first_two_components$PC1, PC2=first_two_components$PC2, insomnia_measure=predicted_data$predictions);
+plot4_data <- rbind(pre_plot4_data_a,pre_plot4_data_b);
+plot4_data$colors[plot4_data$insomnia_measure==0] <- "#00bfc4";
+plot4_data$colors[plot4_data$insomnia_measure==1] <- "#f8766d";
+plot4_data$colors[0 < plot4_data$insomnia_measure & plot4_data$insomnia_measure < 1] <- "#000000";
+plot4_data$group[plot4_data$insomnia_measure==0] <- 0
+plot4_data$group[plot4_data$insomnia_measure==1] <- 1;
+plot4_data$group[0 < plot4_data$insomnia_measure & plot4_data$insomnia_measure < 1] <- 2;
+
+png("figures/figure_logistic.png",width=10,height=7,units="in",res=1200);
+scatterplot3d(select(plot4_data,c(PC1,PC2,insomnia_measure)),
+                       pch = 16,
+                       angle=15,
+                       color=plot4_data$colors,
+                       main="Does Logistic Regression Detect a Relationship \nBetween Insomnia Status and the First Two Principal Components of Weather Metrics?",
+                       xlab = paste("PC1 [p=",p1,"]"),
+                       ylab = paste("PC2 [p=",p2,"]"),
+                       zlab = "Insomnia Indicators and Regression Predictions");
+legend("right", legend = c("Did Not Report Insomnia","Reported Insomnia","Model Prediction Surface"),
+       col =  c("#00bfc4", "#f8766d", "#000000"), 
+       pch = c(16, 17, 18), 
+       inset = 0.1, xpd = TRUE, horiz = TRUE);
+dev.off();
+
+
