@@ -1,26 +1,33 @@
 ---
-editor_options: 
-  markdown: 
+editor_options:
+  markdown:
     wrap: 72
 ---
 
 # Insomnia: Indicators and Associations in Self-reported Data
+
+Michael V. Edwards, 14Dec2023\
+BIOS 611: Introduction to Data Science, Dr. Vincent Toups
 
 ## Introduction
 
 One of the most common conditions that affects sleep is characterized by
 its untimely absence. Insomnia affects anywhere from 6-30% of
 individuals worldwide, depending on varying criteria for frequency,
-intensity, and duration of sleeplessness [1]. There are also many
+intensity, and duration of sleeplessness
+[[1](https://jcsm.aasm.org/doi/10.5664/jcsm.26929)]. There are also many
 explanations for insomnia, ranging from lifestyle and stress to genetics
-and developmental experiences [2,3]. One aspect of insomnia that is
-ubiquitous, however, is its association with anxiety and depression [2].
+and developmental experiences
+[[2](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8506741/pdf/atm-09-18-1426.pdf),[3](https://journals.physiology.org/doi/full/10.1152/physrev.00046.2019)].
+One aspect of insomnia that is ubiquitous, however, is its association
+with anxiety and depression
+[[2](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8506741/pdf/atm-09-18-1426.pdf)].
 
-Individuals interested in challenging insomnia and other chronic
+Individuals interested in "decoding" insomnia and other chronic
 conditions can download the Flaredown app and record a variety of
-"trackables"--diagnoses, symptoms, behaviors, even the weather--on their
-way to "decoding" their diseases [4]. To help with this endeavor, we can
-use the entirety of user data generated over seven years and begin
+trackables (diagnoses, symptoms, behaviors, even the weather!)
+[[4](https://flaredown.com/)]. To help with this endeavor, we can use
+the entirety of user data generated over seven years and begin
 hypothesis generation.
 
 ## Data and Direction
@@ -76,42 +83,73 @@ Let's try k-means clustering again, on the subset of these two
 components:
 
 ![](./figures/figure_insomnia_cluster_subset.png){width=".9\\linewidth"}
+
 Ouch! The clustering appears to have detected something this time, but
 the NMI still will not budge. If we were to use the current clustering
 as a predictor for insomnia, we would observe a very high false positive
 rate.
 
-Perhaps it's time to appeal to the literature for some direction.
+As a final appeal, we can use multiple logistic regression to elucidate
+a relationship between insomnia status and the five weather metrics. If
+we create a logistic model with insomnia status as the response variable
+and the first two principal components as predictor variables, we get
+the following result:
 
-## Predicting Insomnia from Age
+![](./figures/figure_logistic.png){width=".9\\linewidth"}
 
-Insomnia is (actually) influenced by other sleep disorders, lack of
-physical activity, medication use, and chronic pain--all of which have
-associations with aging [5,6]. We actually have the data to test each of
-these associations, but we can attempt to aggregate their effects by
-targeting age.
+Despite the low p-values with respect to each principal component, the
+clinical significance of the detected relationship is insignificant.
+This is evident in the flatness of the prediction surface.
 
-To properly depict this relationship, we should be intentional in how we
-display insomnia status and age. 
-- Insomnia Status: we can control for
-differences in the number of data points contributed by users across
-different ages by reporting the proportion of recorded days they
-experienced insomnia 
-- Age: we can limit the range to exclude outliers
-in the dataset like toddlers and 120-year-olds
+## Future Direction
 
-![](./figures/figure_insomnia_vs_age.png){width=".9\\linewidth"}
+After the above analysis, it is safe to say that this dataset does not
+indicate the presence of a meaningful relationship between insomnia
+status and pressure, humidity, minimum temperature, maximum temperature,
+or precipitation intensity.
+
+There is still much to explore in this data, however, but future
+investigation should utilize existing insomnia literature for direction.
+For example, it is known that insomnia is influenced by other sleep
+disorders, lack of physical activity, medication use, and chronic
+pain--all of which have associations with aging
+[[5](https://www.mayoclinic.org/diseases-conditions/insomnia/symptoms-causes/syc-20355167),[6](https://www.nhlbi.nih.gov/health/insomnia/causes)].
+We have the data to test each of these associations, but these endeavors
+may require additional data wrangling, as much of this data does not
+exist in continuous numeric form. To preview the challenges that will
+enmesh future study, consider how many data points exist for each unique
+user:
+
+![](./figures/figure_days_per_user.png){width=".9\\linewidth"}
+
+For occurrence and count derivations, such a distribution will
+necessitate various controls.
+
+#### While the project did not reveal any clinical insights, this exercise in data science has been an exposition of the various tools that can be leveraged to manipulate and classify large-scale user-generated data.
 
 ## References
 
-1.  <https://jcsm.aasm.org/doi/10.5664/jcsm.26929>
+1.  R Thomas (14 November, 2019). ["Insomnia: Definition, Prevalence,
+    Etiology, and
+    Consequences"](https://jcsm.aasm.org/doi/10.5664/jcsm.26929).
+    Journal of Clinical Sleep Medicine.
 
-2.  <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8506741/pdf/atm-09-18-1426.pdf>
+2.  L Chenyong, Y Zhao, S Qin, et al (2021). ["Randomized controlled
+    trial of acupuncture for anxiety and depression in patients with
+    chronic
+    insomnia"](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8506741/pdf/atm-09-18-1426.pdf).
+    Annals of Translational Medicine.
 
-3.  <https://journals.physiology.org/doi/full/10.1152/physrev.00046.2019>
+3.  EJW Van Someren (04 June, 2021). ["Brain mechanisms of insomnia: new
+    perspectives on causes and
+    consequences"](https://journals.physiology.org/doi/full/10.1152/physrev.00046.2019).
+    Physiological Reviews.
 
-4.  <https://flaredown.com/>
+4.  [Flaredown](https://flaredown.com/). Accessed 10 December, 2023.
 
-5.  <https://www.mayoclinic.org/diseases-conditions/insomnia/symptoms-causes/syc-20355167>
+5.  [Insomnia](https://www.mayoclinic.org/diseases-conditions/insomnia/symptoms-causes/syc-20355167).
+    Mayo Clinic. Accessed 10 December, 2023.
 
-6.  <https://www.nhlbi.nih.gov/health/insomnia/causes>
+6.  [Insomnia - Causes and Risk
+    Factors](https://www.nhlbi.nih.gov/health/insomnia/causes). National
+    Heart, Lung, and Blood Institute. Accessed 10 December, 2023.
