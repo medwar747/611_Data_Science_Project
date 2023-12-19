@@ -4,11 +4,14 @@ This repository houses an analysis of data from participants with various chroni
 
 ## Interacting with the Project
 
-Be sure to have Git, Docker (Desktop), and RStudio installed before attempting to interact with this project.\
 Note: The following instructions are designed for Windows users.\
-Note: Step 1 need only be executed when interacting with the project for the first time.
+Note: Steps 1 & 2 need only be executed when interacting with the project for the first time.
 
-#### 1. Cloning the Repository
+#### 1. Software Needed
+
+Be sure to have [Git](https://gitforwindows.org/), [Docker](https://www.docker.com/products/docker-desktop/), and [RStudio](https://posit.co/download/rstudio-desktop/) installed before attempting to interact with this project. Once Git is installed, open Git Bash and run `git lfs install` so that Git LFS can manage the download of the large dataset needed for this project.
+
+#### 2. Cloning the Repository
 
 Open Windows PowerShell and `cd` to the directory where you want the repository to reside. Clone the repository with the following:
 
@@ -16,7 +19,7 @@ Open Windows PowerShell and `cd` to the directory where you want the repository 
 git clone https://github.com/medwar747/611_Data_Science_Project.git
 ```
 
-#### 2. Setting up the Environment
+#### 3. Setting up the Environment
 
 Open the project and note the Dockerfile. The Dockerfile is essential to building a neat and reproducible experience for the user, where needed preliminaries like library installations are executed.
 
@@ -30,7 +33,7 @@ Users can build and run the repository container with the script `start-env.sh`.
 bash start-env.sh
 ```
 
-#### 3. Accessing the Environment.
+#### 4. Accessing the Environment.
 
 Visit <http://localhost:8789> to access the repository environment in RStudio. Both the username and password are "rstudio".
 
